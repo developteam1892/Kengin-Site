@@ -417,6 +417,14 @@
             60% { content: '..'; }
             80%, 100% { content: '...'; }
         }
+
+        /* Ensure sidebar hides on small screens even after React renders post-login */
+        .sidebar { display: none; }
+        .main-content { padding-left: 0; }
+        @media (min-width: 1024px) {
+            .sidebar { display: flex !important; }
+            .main-content { padding-left: 16rem; }
+        }
     </style>
 </head>
 <body>
@@ -503,33 +511,29 @@
             ];
 
             return (
-                <div className="w-20 lg:w-64 h-screen fixed left-0 top-0 glass-panel border-r border-white/10 flex flex-col z-50 transition-all duration-300">
-                    <div className="p-6 flex items-center gap-3 justify-center lg:justify-start">
-                        <i className="fa-solid fa-shield-virus text-3xl text-cyber-blue animate-pulse-fast"></i>
-                        <span className="hidden lg:block text-xl font-bold tracking-wider text-white">
-                            CYBER<span className="text-cyber-blue">SHIELD</span>
-                        </span>
-                    </div>
-
-                    <div className="flex-1 py-8 flex flex-col gap-2">
-                        {menuItems.map(item => (
-                            <a
-                                key={item.id}
-                                href={item.link}
-                                className={`
-                                    flex items-center gap-4 px-6 py-4 transition-all duration-300 relative overflow-hidden group
-                                    ${activeTab === item.id ? 'text-cyber-blue bg-white/5' : 'text-slate-400 hover:text-white hover:bg-white/5'}
-                                `}
-                            >
-                                {activeTab === item.id && (
-                                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-cyber-blue shadow-[0_0_15px_rgba(0,240,255,0.8)]"></div>
-                                )}
-                                <i className={`fa-solid ${item.icon} text-xl w-6 text-center`}></i>
-                                <span className="hidden lg:block font-medium tracking-wide">{item.label}</span>
-                            </a>
-                        ))}
-                    </div>
-                </div>
+                <aside className="hidden lg:flex sidebar w-64 h-screen fixed left-0 top-0 glass-panel border-r border-white/10 flex-col z-50">
+                        <div className="p-6 flex items-center gap-3 justify-start">
+                            <i className="fa-solid fa-shield-virus text-3xl text-cyber-blue animate-pulse-fast"></i>
+                            <span className="text-xl font-bold tracking-wider text-white">
+                                CYBER<span className="text-cyber-blue">SHIELD</span>
+                            </span>
+                        </div>
+                        <nav className="flex-1 py-8 flex flex-col gap-2">
+                            <button className="flex items-center gap-4 px-6 py-4 text-cyber-blue bg-white/5 relative">
+                                <div className="absolute left-0 top-0 bottom-0 w-1 bg-cyber-blue shadow-[0_0_15px_rgba(0,240,255,0.8)]"></div>
+                                <i className="fa-solid fa-chart-pie text-xl w-6 text-center"></i>
+                                <span className="font-medium">Overview</span>
+                            </button>
+                            <button onClick={() => window.location.href='report-page.html'} className="flex items-center gap-4 px-6 py-4 text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+                                <i className="fa-solid fa-file-shield text-xl w-6 text-center"></i>
+                                <span className="font-medium">Report Threat</span>
+                            </button>
+                            <button onClick={() => window.location.href='admin-panel.html'} className="flex items-center gap-4 px-6 py-4 text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+                                <i className="fa-solid fa-user-shield text-xl w-6 text-center"></i>
+                                <span className="font-medium">Admin Panel</span>
+                            </button>
+                        </nav>
+                    </aside>
             );
         };
 
@@ -1173,7 +1177,7 @@
             );
         };
 
-        const ReportPage = () => {
+        const ReportPage = ({ mobileOpen, setMobileOpen }) => {
             const [activeTab, setActiveTab] = useState('new');
             const [formData, setFormData] = useState({
                 incidentType: 'phishing',
@@ -1865,17 +1869,26 @@
             );
         };
 
-        const App = ({ currentUser, profileEmoji, onLogout, onOpenSettings, onOpenSecurity, onOpenNotifications }) => {
+        const App = ({ currentUser, profileEmoji, onLogout, onOpenSettings, onOpenSecurity, onOpenNotifications, mobileOpen, setMobileOpen }) => {
             return (
-                <div className="min-h-screen pl-0 lg:pl-64 transition-all duration-300">
+                <div className="min-h-screen main-content transition-all duration-300">
                     <Sidebar activeTab="report" />
                     
-                    <header className="h-20 border-b border-white/10 glass-panel sticky top-0 z-40 px-8 flex items-center justify-between">
-                        <h2 className="text-xl font-bold text-white tracking-wide">
-                            <span className="text-slate-500 font-light">OPS CENTER /</span> REPORT THREAT
-                        </h2>
+                    <header className="h-20 border-b border-white/10 glass-panel sticky top-0 z-40 px-4 lg:px-8 flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <button
+                                onClick={() => setMobileOpen(true)}
+                                className="lg:hidden p-2 rounded-md bg-black/20 hover:bg-white/5 transition"
+                                aria-label="Open menu"
+                            >
+                                <i className="fa-solid fa-bars text-cyber-blue"></i>
+                            </button>
+                            <h2 className="text-lg lg:text-xl font-bold text-white tracking-wide">
+                                <span className="text-slate-500 font-light">OPS CENTER /</span> <span className="hidden sm:inline">REPORT THREAT</span>
+                            </h2>
+                        </div>
 
-                        <div className="flex items-center gap-6">
+                        <div className="flex items-center gap-4 lg:gap-6">
                             {currentUser ? (
                                 <ProfileDropdown 
                                     user={currentUser} 
@@ -1892,8 +1905,57 @@
                         </div>
                     </header>
 
+                    {mobileOpen && (
+                        <>
+                            <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={() => setMobileOpen(false)}></div>
+                            <aside className="fixed left-0 top-0 bottom-0 w-72 z-50 glass-panel p-6 lg:hidden overflow-y-auto">
+                                <div className="flex items-center justify-between mb-6">
+                                    <div className="flex items-center gap-3">
+                                        <i className="fa-solid fa-shield-virus text-2xl text-cyber-blue"></i>
+                                        <span className="font-bold text-white">CYBERSHIELD</span>
+                                    </div>
+                                    <button onClick={() => setMobileOpen(false)} className="p-2 rounded-md hover:bg-white/5">
+                                        <i className="fa-solid fa-xmark text-white"></i>
+                                    </button>
+                                </div>
+
+                                <nav className="flex flex-col gap-2">
+                                    <a href="index.html" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/5 text-slate-200">
+                                        <i className="fa-solid fa-chart-pie w-6 text-cyber-blue"></i>
+                                        <span>Overview</span>
+                                    </a>
+                                    <a href="report-page.html" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/5 text-slate-200 bg-white/5 border-l-2 border-cyber-blue">
+                                        <i className="fa-solid fa-file-shield w-6 text-cyber-blue"></i>
+                                        <span>Report Threat</span>
+                                    </a>
+                                    <a href="admin-panel.html" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/5 text-slate-200">
+                                        <i className="fa-solid fa-user-shield w-6 text-cyber-blue"></i>
+                                        <span>Admin Panel</span>
+                                    </a>
+                                </nav>
+
+                                {currentUser && (
+                                    <div className="mt-6 border-t border-white/10 pt-4">
+                                        <button onClick={() => { onOpenSettings(); setMobileOpen(false); }} className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/5 flex items-center gap-3">
+                                            <i className="fa-solid fa-user-gear text-cyber-blue"></i>
+                                            <span>Account Settings</span>
+                                        </button>
+                                        <button onClick={() => { onOpenSecurity(); setMobileOpen(false); }} className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/5 flex items-center gap-3 mt-2">
+                                            <i className="fa-solid fa-shield text-cyber-purple"></i>
+                                            <span>Security</span>
+                                        </button>
+                                        <button onClick={() => { onOpenNotifications(); setMobileOpen(false); }} className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/5 flex items-center gap-3 mt-2">
+                                            <i className="fa-solid fa-bell text-yellow-400"></i>
+                                            <span>Notifications</span>
+                                        </button>
+                                    </div>
+                                )}
+                            </aside>
+                        </>
+                    )}
+
                     <main className="p-6 lg:p-8">
-                        <ReportPage />
+                        <ReportPage mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
                     </main>
                 </div>
             );
@@ -1905,6 +1967,7 @@
             const [showSettingsModal, setShowSettingsModal] = useState(false);
             const [showSecurityModal, setShowSecurityModal] = useState(false);
             const [showNotificationsModal, setShowNotificationsModal] = useState(false);
+            const [mobileOpen, setMobileOpen] = useState(false);
 
             useEffect(() => {
                 const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -1940,6 +2003,8 @@
                     onOpenSettings={() => setShowSettingsModal(true)}
                     onOpenSecurity={() => setShowSecurityModal(true)}
                     onOpenNotifications={() => setShowNotificationsModal(true)}
+                    mobileOpen={mobileOpen}
+                    setMobileOpen={setMobileOpen}
                 />
             );
         };
