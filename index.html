@@ -1416,18 +1416,7 @@
                             
                             {currentUser ? (
                                 <>
-                                    <div className="hidden sm:flex items-center gap-3">
-                                        <button onClick={() => setShowSettingsModal(true)} className="p-2 rounded-lg bg-black/30 hover:bg-white/5 transition flex items-center justify-center" title="Account Settings">
-                                            <i className="fa-solid fa-user-gear text-cyber-blue"></i>
-                                        </button>
-                                        <button onClick={() => setShowSecurityModal(true)} className="p-2 rounded-lg bg-black/30 hover:bg-white/5 transition flex items-center justify-center" title="Security">
-                                            <i className="fa-solid fa-shield text-cyber-purple"></i>
-                                        </button>
-                                        <button onClick={() => setShowNotificationsModal(true)} className="relative p-2 rounded-lg bg-black/30 hover:bg-white/5 transition flex items-center justify-center" title="Notifications">
-                                            <i className="fa-solid fa-bell text-yellow-400"></i>
-                                            <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full" style={{ transform: 'translate(45%, -45%)' }}></span>
-                                        </button>
-                                    </div>
+                                    
 
                                     <ProfileDropdown 
                                         user={currentUser} 
