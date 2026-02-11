@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CyberShield | Admin Panel</title>
+    <title>CyberShield | Dashboard</title>
     
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -11,7 +11,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -285,33 +284,16 @@
     <div class="scanlines"></div>
     <div id="root"></div>
 
-    <script>
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyD74hSR_EipAUN9tvSN8lLe6hGJ6p-UzSM",
-            authDomain: "cybershield-fa262.firebaseapp.com",
-            databaseURL: "https://cybershield-fa262-default-rtdb.asia-southeast1.firebasedatabase.app/",
-            projectId: "cybershield-fa262",
-            storageBucket: "cybershield-fa262.firebasestorage.app",
-            messagingSenderId: "1095310557329",
-            appId: "1:1095310557329:web:b91d2dd48ef112c0fa3f30",
-            measurementId: "G-H8LDB4XLB1"
-        };
-
-        // Initialize Firebase
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        const database = firebase.database();
-        const auth = firebase.auth();
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
         // Loading Screen Controller
         const loadingSteps = [
             { text: 'INITIALIZING SYSTEM', progress: 20 },
-            { text: 'AUTHENTICATING ADMIN', progress: 40 },
-            { text: 'LOADING SECURITY DATA', progress: 60 },
-            { text: 'SYNCING DATABASE', progress: 80 },
-            { text: 'ADMIN PANEL READY', progress: 100 }
+            { text: 'CONNECTING TO DATABASE', progress: 40 },
+            { text: 'LOADING SECURITY PROTOCOLS', progress: 60 },
+            { text: 'SYNCHRONIZING DATA', progress: 80 },
+            { text: 'LAUNCHING DASHBOARD', progress: 100 }
         ];
 
         let currentStep = 0;
@@ -336,12 +318,25 @@
 
         // Start loading animation
         setTimeout(updateLoadingScreen, 300);
-    </script>
 
-    <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
+        // --- FIREBASE CONFIGURATION ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyD74hSR_EipAUN9tvSN8lLe6hGJ6p-UzSM",
+            authDomain: "cybershield-fa262.firebaseapp.com",
+            projectId: "cybershield-fa262",
+            databaseURL: "https://cybershield-fa262-default-rtdb.asia-southeast1.firebasedatabase.app/",
+            storageBucket: "cybershield-fa262.firebasestorage.app",
+            messagingSenderId: "1095310557329",
+            appId: "1:1095310557329:web:b91d2dd48ef112c0fa3f30",
+            measurementId: "G-H8LDB4XLB1"
+        };
 
-        const ANALYSTS = ['Analyst-01', 'Analyst-02', 'Analyst-03', 'Analyst-04'];
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const database = firebase.database();
+        const auth = firebase.auth();
 
         // 3D Emoji Collection
         const EMOJI_COLLECTION = [
@@ -361,7 +356,7 @@
                 type: 'alert',
                 title: 'High Severity Threat Detected',
                 message: 'A new high-severity phishing attempt has been reported affecting your network.',
-                timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
+                timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString(), // 15 mins ago
                 read: false,
                 icon: 'fa-triangle-exclamation',
                 color: 'red'
@@ -371,7 +366,7 @@
                 type: 'success',
                 title: 'Report Review Completed',
                 message: 'Your submitted threat report #TR-2024-0123 has been reviewed and marked as resolved.',
-                timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
+                timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
                 read: false,
                 icon: 'fa-check-circle',
                 color: 'green'
@@ -381,10 +376,30 @@
                 type: 'info',
                 title: 'System Update Available',
                 message: 'CyberShield v2.5.0 is now available with enhanced threat detection capabilities.',
-                timestamp: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
+                timestamp: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(), // 5 hours ago
                 read: false,
                 icon: 'fa-info-circle',
                 color: 'blue'
+            },
+            {
+                id: 'notif4',
+                type: 'warning',
+                title: 'Unusual Activity Detected',
+                message: 'Multiple login attempts detected from an unknown IP address. Please verify your account security.',
+                timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), // 1 day ago
+                read: true,
+                icon: 'fa-exclamation-triangle',
+                color: 'yellow'
+            },
+            {
+                id: 'notif5',
+                type: 'success',
+                title: 'Security Scan Complete',
+                message: 'Weekly security scan completed successfully. No vulnerabilities detected.',
+                timestamp: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(), // 2 days ago
+                read: true,
+                icon: 'fa-shield-check',
+                color: 'green'
             }
         ];
 
@@ -394,6 +409,7 @@
             return (
                 <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 animate-fadeIn" onClick={onClose}>
                     <div className="glass-panel rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-8 animate-slideUp" onClick={(e) => e.stopPropagation()}>
+                        {/* Header */}
                         <div className="flex items-start justify-between mb-6">
                             <div>
                                 <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
@@ -410,6 +426,7 @@
                             </button>
                         </div>
 
+                        {/* Security Status */}
                         <div className="mb-8 p-6 rounded-xl bg-green-500/10 border border-green-500/30 flex items-center gap-4">
                             <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center">
                                 <i className="fa-solid fa-shield-check text-green-400 text-3xl"></i>
@@ -420,6 +437,7 @@
                             </div>
                         </div>
 
+                        {/* Security Features Grid */}
                         <div className="mb-8">
                             <h3 className="text-sm text-slate-400 mb-4 uppercase tracking-wider font-bold">Security Features</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -454,10 +472,82 @@
                                     </div>
                                     <p className="text-sm text-slate-400">Submit threat reports anonymously without tracking.</p>
                                 </div>
+
+                                <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <i className="fa-solid fa-server text-cyber-blue text-xl"></i>
+                                        <h4 className="font-bold text-white">DDoS Protection</h4>
+                                    </div>
+                                    <p className="text-sm text-slate-400">Advanced protection against distributed denial-of-service attacks.</p>
+                                </div>
+
+                                <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <i className="fa-solid fa-clock-rotate-left text-purple-400 text-xl"></i>
+                                        <h4 className="font-bold text-white">Activity Monitoring</h4>
+                                    </div>
+                                    <p className="text-sm text-slate-400">Real-time monitoring of all account activities.</p>
+                                </div>
                             </div>
                         </div>
 
-                        <div className="flex justify-end">
+                        {/* SSL Certificate Info */}
+                        <div className="mb-8 p-6 rounded-xl bg-white/5 border border-white/10">
+                            <h3 className="text-sm text-slate-400 mb-4 uppercase tracking-wider font-bold flex items-center gap-2">
+                                <i className="fa-solid fa-certificate text-cyber-blue"></i>
+                                SSL Certificate Details
+                            </h3>
+                            <div className="space-y-3">
+                                <div className="flex justify-between items-center">
+                                    <span className="text-slate-400">Issued To:</span>
+                                    <span className="text-white font-mono">cybershield-fa262.firebaseapp.com</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-slate-400">Issued By:</span>
+                                    <span className="text-white font-mono">Google Trust Services</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-slate-400">Valid Until:</span>
+                                    <span className="text-white font-mono">December 2025</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-slate-400">Encryption:</span>
+                                    <span className="text-green-400 font-mono">TLS 1.3 (256-bit)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Compliance */}
+                        <div className="mb-8">
+                            <h3 className="text-sm text-slate-400 mb-4 uppercase tracking-wider font-bold">Compliance & Standards</h3>
+                            <div className="flex flex-wrap gap-3">
+                                <span className="px-4 py-2 rounded-full bg-cyber-blue/10 border border-cyber-blue/30 text-cyber-blue text-sm font-mono">
+                                    ISO 27001
+                                </span>
+                                <span className="px-4 py-2 rounded-full bg-cyber-purple/10 border border-cyber-purple/30 text-cyber-purple text-sm font-mono">
+                                    GDPR Compliant
+                                </span>
+                                <span className="px-4 py-2 rounded-full bg-green-400/10 border border-green-400/30 text-green-400 text-sm font-mono">
+                                    SOC 2 Type II
+                                </span>
+                                <span className="px-4 py-2 rounded-full bg-yellow-400/10 border border-yellow-400/30 text-yellow-400 text-sm font-mono">
+                                    NIST Framework
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Privacy Notice */}
+                        <div className="p-4 rounded-xl bg-cyber-blue/10 border border-cyber-blue/30">
+                            <p className="text-sm text-cyber-blue flex items-start gap-2">
+                                <i className="fa-solid fa-info-circle mt-1"></i>
+                                <span>
+                                    We take your privacy seriously. All personal data is encrypted and never shared with third parties. 
+                                    For more information, please review our Privacy Policy and Terms of Service.
+                                </span>
+                            </p>
+                        </div>
+
+                        <div className="mt-6 flex justify-end">
                             <button 
                                 onClick={onClose}
                                 className="px-6 py-3 bg-gradient-to-r from-cyber-purple to-purple-600 rounded-xl font-bold text-white hover:shadow-[0_0_30px_rgba(189,0,255,0.5)] transition-all"
@@ -474,7 +564,7 @@
             const getTimeAgo = (timestamp) => {
                 const now = new Date();
                 const time = new Date(timestamp);
-                const diff = Math.floor((now - time) / 1000);
+                const diff = Math.floor((now - time) / 1000); // seconds
 
                 if (diff < 60) return 'Just now';
                 if (diff < 3600) return `${Math.floor(diff / 60)} minutes ago`;
@@ -498,6 +588,7 @@
             return (
                 <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 animate-fadeIn" onClick={onClose}>
                     <div className="glass-panel rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col animate-slideUp" onClick={(e) => e.stopPropagation()}>
+                        {/* Header */}
                         <div className="p-6 border-b border-white/10">
                             <div className="flex items-start justify-between mb-4">
                                 <div>
@@ -528,6 +619,7 @@
                             )}
                         </div>
 
+                        {/* Notifications List */}
                         <div className="flex-1 overflow-y-auto p-6 space-y-3">
                             {notifications.length === 0 ? (
                                 <div className="h-full flex flex-col items-center justify-center text-slate-500 py-12">
@@ -586,12 +678,15 @@
             const handleSave = async () => {
                 setSaving(true);
                 try {
+                    // Update Firebase Auth profile
                     await user.updateProfile({
                         displayName: displayName
                     });
 
+                    // Save emoji to localStorage
                     localStorage.setItem(`userEmoji_${user.uid}`, selectedEmoji);
 
+                    // Also save to Realtime Database for persistence
                     await database.ref(`users/${user.uid}/profile`).set({
                         displayName: displayName,
                         emoji: selectedEmoji,
@@ -614,6 +709,7 @@
             return (
                 <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 animate-fadeIn" onClick={onClose}>
                     <div className="glass-panel rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-8 animate-slideUp" onClick={(e) => e.stopPropagation()}>
+                        {/* Header */}
                         <div className="flex items-start justify-between mb-6">
                             <div>
                                 <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
@@ -640,6 +736,7 @@
                             </div>
                         )}
 
+                        {/* Current Profile Preview */}
                         <div className="mb-8 p-6 rounded-xl bg-white/5 border border-white/10 flex items-center gap-4">
                             <div className="w-20 h-20 rounded-full bg-gradient-to-br from-cyber-blue to-cyber-purple flex items-center justify-center text-5xl border-2 border-cyber-blue/50 shadow-[0_0_20px_rgba(0,240,255,0.3)]">
                                 {selectedEmoji}
@@ -651,6 +748,7 @@
                             </div>
                         </div>
 
+                        {/* Display Name Input */}
                         <div className="mb-8">
                             <label className="block text-sm font-bold text-white mb-3 flex items-center gap-2">
                                 <i className="fa-solid fa-signature text-cyber-blue"></i>
@@ -667,6 +765,7 @@
                             <p className="text-xs text-slate-500 mt-2">{displayName.length}/30 characters</p>
                         </div>
 
+                        {/* Profile Emoji Selector */}
                         <div className="mb-8">
                             <label className="block text-sm font-bold text-white mb-3 flex items-center gap-2">
                                 <i className="fa-solid fa-icons text-cyber-purple"></i>
@@ -687,6 +786,7 @@
                             </div>
                         </div>
 
+                        {/* Account Info (Read-only) */}
                         <div className="mb-8 p-4 rounded-xl bg-white/5 border border-white/10">
                             <p className="text-xs text-slate-400 mb-2 font-mono">ACCOUNT EMAIL (Cannot be changed)</p>
                             <p className="text-white font-medium flex items-center gap-2">
@@ -695,6 +795,7 @@
                             </p>
                         </div>
 
+                        {/* Action Buttons */}
                         <div className="flex gap-3">
                             <button
                                 onClick={onClose}
@@ -734,12 +835,11 @@
                         onClick={() => setIsOpen(!isOpen)}
                         className="flex items-center gap-3 px-4 py-2 rounded-xl bg-cyber-blue/10 border border-cyber-blue/30 hover:bg-cyber-blue/20 hover:shadow-[0_0_20px_rgba(0,240,255,0.3)] transition-all group"
                     >
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyber-blue to-cyber-purple flex items-center justify-center text-2xl border border-cyber-blue/50 relative">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyber-blue to-cyber-purple flex items-center justify-center text-2xl border border-cyber-blue/50">
                             {profileEmoji}
-                            {hasUnreadNotifications && <div className="notification-badge"></div>}
                         </div>
                         <div className="text-left hidden sm:block">
-                            <p className="text-xs text-slate-400 font-mono">ADMIN</p>
+                            <p className="text-xs text-slate-400 font-mono">LOGGED IN</p>
                             <p className="text-sm font-bold text-white">{user.displayName || user.email}</p>
                         </div>
                         <i className={`fa-solid fa-chevron-down text-cyber-blue text-xs transition-transform ${isOpen ? 'rotate-180' : ''}`}></i>
@@ -817,13 +917,14 @@
             return (
                 <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 animate-fadeIn" onClick={onClose}>
                     <div className="glass-panel rounded-2xl max-w-md w-full p-8 animate-slideUp" onClick={(e) => e.stopPropagation()}>
+                        {/* Header */}
                         <div className="flex items-start justify-between mb-6">
                             <div>
                                 <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
                                     <i className="fa-solid fa-shield-virus text-cyber-blue"></i>
                                     CYBERSHIELD
                                 </h2>
-                                <p className="text-sm text-slate-400">Admin Access Required</p>
+                                <p className="text-sm text-slate-400">Access Your Security Dashboard</p>
                             </div>
                             <button 
                                 onClick={onClose}
@@ -833,6 +934,7 @@
                             </button>
                         </div>
 
+                        {/* Login/Register Options */}
                         <div className="space-y-4">
                             <button 
                                 onClick={() => window.location.href = 'login.html'}
@@ -860,6 +962,7 @@
                             </button>
                         </div>
 
+                        {/* Footer Info */}
                         <div className="mt-6 pt-6 border-t border-white/10">
                             <p className="text-xs text-slate-500 text-center">
                                 <i className="fa-solid fa-lock text-cyber-blue mr-1"></i>
@@ -871,463 +974,209 @@
             );
         };
 
-        // Sidebar Navigation
-        const Sidebar = ({ activeTab }) => {
-            const menuItems = [
-                { id: 'dashboard', icon: 'fa-chart-pie', label: 'Overview', link: 'dashboard.html' },
-                { id: 'report', icon: 'fa-file-shield', label: 'Report Threat', link: 'report-page.html' },
-                { id: 'admin', icon: 'fa-user-shield', label: 'Admin Panel', link: 'admin-panel.html' },
-            ];
-
-            const handleNavigation = (link) => {
-                window.location.href = link;
+        const MetricCard = ({ label, value, trend, trendValue, icon, color }) => {
+            const colors = {
+                blue: 'text-cyber-blue border-cyber-blue/30 bg-cyber-blue/10',
+                red: 'text-cyber-red border-cyber-red/30 bg-cyber-red/10',
+                purple: 'text-cyber-purple border-cyber-purple/30 bg-cyber-purple/10',
+                green: 'text-green-400 border-green-400/30 bg-green-400/10'
             };
-
             return (
-                <div className="w-20 lg:w-64 h-screen fixed left-0 top-0 glass-panel border-r border-white/10 flex flex-col z-50 transition-all duration-300">
-                    <div className="p-6 flex items-center gap-3 justify-center lg:justify-start">
-                        <i className="fa-solid fa-shield-virus text-3xl text-cyber-blue animate-pulse-fast"></i>
-                        <span className="hidden lg:block text-xl font-bold tracking-wider text-white">
-                            CYBER<span className="text-cyber-blue">SHIELD</span>
+                <div className="glass-panel p-6 rounded-2xl relative overflow-hidden transition-all hover:scale-105 animate-fadeIn">
+                    <div className="flex justify-between items-start mb-4">
+                        <div>
+                            <p className="text-sm font-mono text-slate-400 uppercase tracking-wider">{label}</p>
+                            <h3 className="text-3xl font-bold text-white mt-1">{value}</h3>
+                        </div>
+                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center border ${colors[color]}`}>
+                            <i className={`fa-solid ${icon}`}></i>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs font-medium">
+                        <span className={trend === 'up' ? 'text-red-400' : 'text-green-400'}>
+                            <i className={`fa-solid fa-arrow-${trend}`}></i> {trendValue}
                         </span>
-                    </div>
-
-                    <div className="flex-1 py-8 flex flex-col gap-2">
-                        {menuItems.map(item => (
-                            <button
-                                key={item.id}
-                                onClick={() => handleNavigation(item.link)}
-                                className={`
-                                    flex items-center gap-4 px-6 py-4 transition-all duration-300 relative overflow-hidden group
-                                    ${activeTab === item.id ? 'text-cyber-blue bg-white/5' : 'text-slate-400 hover:text-white hover:bg-white/5'}
-                                `}
-                            >
-                                {activeTab === item.id && (
-                                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-cyber-blue shadow-[0_0_15px_rgba(0,240,255,0.8)]"></div>
-                                )}
-                                <i className={`fa-solid ${item.icon} text-xl w-6 text-center`}></i>
-                                <span className="hidden lg:block font-medium tracking-wide">{item.label}</span>
-                            </button>
-                        ))}
+                        <span className="text-slate-500">from database</span>
                     </div>
                 </div>
             );
         };
 
-        // Filter Panel Component
-        const FilterPanel = ({ filters, setFilters, onReset }) => {
-            return (
-                <div className="glass-panel rounded-2xl p-6 animate-fadeIn">
-                    <div className="flex items-center justify-between mb-6">
-                        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                            <i className="fa-solid fa-filter text-cyber-blue"></i>
-                            Advanced Filters
-                        </h3>
-                        <button 
-                            onClick={onReset}
-                            className="text-xs text-slate-400 hover:text-cyber-blue transition-colors"
-                        >
-                            Reset All
-                        </button>
-                    </div>
-
-                    <div className="space-y-4">
-                        <div>
-                            <label className="text-xs font-mono text-slate-400 uppercase tracking-wider mb-2 block">
-                                Full-Text Search
-                            </label>
-                            <div className="relative">
-                                <i className="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"></i>
-                                <input
-                                    type="text"
-                                    value={filters.search}
-                                    onChange={(e) => setFilters({...filters, search: e.target.value})}
-                                    placeholder="Search reports..."
-                                    className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-slate-500 focus:border-cyber-blue focus:outline-none transition-colors"
-                                />
-                            </div>
-                        </div>
-
-                        <div>
-                            <label className="text-xs font-mono text-slate-400 uppercase tracking-wider mb-2 block">
-                                Incident Type
-                            </label>
-                            <select
-                                value={filters.type}
-                                onChange={(e) => setFilters({...filters, type: e.target.value})}
-                                className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white focus:border-cyber-blue focus:outline-none transition-colors"
-                            >
-                                <option value="">All Types</option>
-                                <option value="phishing">Phishing</option>
-                                <option value="malware">Malware / Ransomware</option>
-                                <option value="ddos">DDoS Attack</option>
-                                <option value="breach">Data Breach</option>
-                                <option value="unauthorized">Unauthorized Access</option>
-                                <option value="suspicious">Suspicious Activity</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label className="text-xs font-mono text-slate-400 uppercase tracking-wider mb-2 block">
-                                Severity Level
-                            </label>
-                            <select
-                                value={filters.severity}
-                                onChange={(e) => setFilters({...filters, severity: e.target.value})}
-                                className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white focus:border-cyber-blue focus:outline-none transition-colors"
-                            >
-                                <option value="">All Levels</option>
-                                <option value="low">Low</option>
-                                <option value="medium">Medium</option>
-                                <option value="high">High</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label className="text-xs font-mono text-slate-400 uppercase tracking-wider mb-2 block">
-                                Status
-                            </label>
-                            <select
-                                value={filters.status}
-                                onChange={(e) => setFilters({...filters, status: e.target.value})}
-                                className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white focus:border-cyber-blue focus:outline-none transition-colors"
-                            >
-                                <option value="">All Statuses</option>
-                                <option value="submitted">Submitted</option>
-                                <option value="under_review">Under Review</option>
-                                <option value="action_taken">Action Taken</option>
-                                <option value="closed">Closed</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label className="text-xs font-mono text-slate-400 uppercase tracking-wider mb-2 block">
-                                Assigned To
-                            </label>
-                            <select
-                                value={filters.assignedTo}
-                                onChange={(e) => setFilters({...filters, assignedTo: e.target.value})}
-                                className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white focus:border-cyber-blue focus:outline-none transition-colors"
-                            >
-                                <option value="">All Analysts</option>
-                                <option value="unassigned">Unassigned</option>
-                                {ANALYSTS.map(analyst => (
-                                    <option key={analyst} value={analyst}>{analyst}</option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            );
-        };
-
-        // Incident Detail Modal
-        const IncidentDetailModal = ({ incident, onClose, onUpdate }) => {
-            const [assignedTo, setAssignedTo] = useState(incident.assignedTo || '');
-            const [newComment, setNewComment] = useState('');
-
-            if (!incident) return null;
-
-            const handleAssign = () => {
-                onUpdate(incident.firebaseKey, { assignedTo });
-            };
-
-            const handleAddComment = () => {
-                if (newComment.trim()) {
-                    const comment = {
-                        analyst: 'Admin User',
-                        text: newComment,
-                        time: new Date().toLocaleString()
-                    };
-                    const updatedComments = [...(incident.adminComments || []), comment];
-                    onUpdate(incident.firebaseKey, { adminComments: updatedComments });
-                    setNewComment('');
-                }
-            };
-
-            const handleStatusChange = (newStatus) => {
-                onUpdate(incident.firebaseKey, { status: newStatus });
-            };
+        const ReportDetailModal = ({ report, onClose }) => {
+            if (!report) return null;
 
             const getSeverityColor = (severity) => {
                 switch(severity?.toLowerCase()) {
-                    case 'high': return 'bg-red-500/20 text-red-400 border-red-500/30';
-                    case 'medium': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
-                    case 'low': return 'bg-green-500/20 text-green-400 border-green-500/30';
-                    default: return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+                    case 'high': return 'bg-red-500/20 text-red-400 border-red-500/50';
+                    case 'medium': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/50';
+                    case 'low': return 'bg-green-500/20 text-green-400 border-green-500/50';
+                    default: return 'bg-blue-500/20 text-blue-400 border-blue-500/50';
                 }
             };
 
             const getStatusColor = (status) => {
                 switch(status) {
-                    case 'submitted': return 'bg-green-500/20 text-green-400 border-green-500/30';
-                    case 'under_review': return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
-                    case 'action_taken': return 'bg-purple-500/20 text-purple-400 border-purple-500/30';
-                    case 'closed': return 'bg-slate-500/20 text-slate-400 border-slate-500/30';
-                    default: return 'bg-slate-500/20 text-slate-400 border-slate-500/30';
+                    case 'submitted': return 'bg-green-500/20 text-green-400 border-green-500/50';
+                    case 'under_review': return 'bg-blue-500/20 text-blue-400 border-blue-500/50';
+                    case 'action_taken': return 'bg-purple-500/20 text-purple-400 border-purple-500/50';
+                    case 'closed': return 'bg-cyber-blue/20 text-cyber-blue border-cyber-blue/50';
+                    default: return 'bg-slate-500/20 text-slate-400 border-slate-500/50';
                 }
             };
 
             return (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop animate-fadeIn" onClick={onClose}>
-                    <div className="glass-panel rounded-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden flex flex-col animate-slideUp" onClick={(e) => e.stopPropagation()}>
-                        <div className="p-6 border-b border-white/10 flex items-start justify-between">
-                            <div className="flex-1">
-                                <div className="flex items-center gap-3 mb-2">
-                                    <h2 className="text-2xl font-bold text-white font-mono">{incident.id}</h2>
-                                    <span className={`text-xs font-bold px-3 py-1 rounded border ${getSeverityColor(incident.data?.severity)}`}>
-                                        {incident.data?.severity?.toUpperCase() || 'MEDIUM'}
-                                    </span>
-                                    <span className={`text-xs font-bold px-3 py-1 rounded border ${getStatusColor(incident.status)}`}>
-                                        {incident.status?.replace('_', ' ').toUpperCase() || 'PENDING'}
-                                    </span>
-                                </div>
-                                <p className="text-slate-400 text-sm">
-                                    <span className="font-mono">{incident.data?.incidentType}</span> • Reported {incident.submittedDate}
-                                </p>
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 animate-fadeIn" onClick={onClose}>
+                    <div className="glass-panel rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-8 animate-slideIn" onClick={(e) => e.stopPropagation()}>
+                        {/* Header */}
+                        <div className="flex items-start justify-between mb-6">
+                            <div>
+                                <h2 className="text-2xl font-bold text-white mb-2">Threat Report Details</h2>
+                                <p className="text-sm font-mono text-slate-400">ID: {report.id}</p>
                             </div>
                             <button 
                                 onClick={onClose}
-                                className="text-slate-400 hover:text-white transition-colors"
+                                className="w-10 h-10 rounded-lg border border-white/20 hover:bg-white/5 transition flex items-center justify-center"
                             >
-                                <i className="fa-solid fa-xmark text-2xl"></i>
+                                <i className="fa-solid fa-xmark text-xl"></i>
                             </button>
                         </div>
 
-                        <div className="flex-1 overflow-y-auto p-6">
-                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                                <div className="lg:col-span-2 space-y-6">
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="p-4 rounded-lg bg-white/5 border border-white/10">
-                                            <p className="text-xs text-slate-400 mb-1">Incident Type</p>
-                                            <p className="text-white font-medium">{incident.data?.incidentType || 'N/A'}</p>
-                                        </div>
+                        {/* Status Badges */}
+                        <div className="flex gap-3 mb-6">
+                            <span className={`px-4 py-2 rounded-full border text-sm font-mono ${getStatusColor(report.status)}`}>
+                                {report.status?.replace('_', ' ').toUpperCase() || 'PENDING'}
+                            </span>
+                            <span className={`px-4 py-2 rounded-full border text-sm font-mono ${getSeverityColor(report.data?.severity)}`}>
+                                {report.data?.severity?.toUpperCase() || 'MEDIUM'} SEVERITY
+                            </span>
+                        </div>
 
-                                        <div className="p-4 rounded-lg bg-white/5 border border-white/10">
-                                            <p className="text-xs text-slate-400 mb-1">Affected Assets</p>
-                                            <p className="text-white font-medium">{incident.data?.affectedAssets || 'N/A'}</p>
-                                        </div>
+                        {/* Report Details Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div className="p-4 rounded-lg bg-white/5 border border-white/10">
+                                <p className="text-xs text-slate-400 mb-1">Incident Type</p>
+                                <p className="text-white font-medium">{report.data?.incidentType || 'N/A'}</p>
+                            </div>
 
-                                        <div className="p-4 rounded-lg bg-white/5 border border-white/10">
-                                            <p className="text-xs text-slate-400 mb-1">IP Address</p>
-                                            <p className="text-white font-medium font-mono">{incident.data?.ipAddress || 'Not provided'}</p>
-                                        </div>
+                            <div className="p-4 rounded-lg bg-white/5 border border-white/10">
+                                <p className="text-xs text-slate-400 mb-1">Submitted Date</p>
+                                <p className="text-white font-medium">{report.submittedDate || 'N/A'}</p>
+                            </div>
 
-                                        {incident.data?.timestamp && (
-                                            <div className="p-4 rounded-lg bg-white/5 border border-white/10">
-                                                <p className="text-xs text-slate-400 mb-1">Incident Time</p>
-                                                <p className="text-white font-medium text-sm">{new Date(incident.data.timestamp).toLocaleString()}</p>
-                                            </div>
-                                        )}
+                            <div className="p-4 rounded-lg bg-white/5 border border-white/10">
+                                <p className="text-xs text-slate-400 mb-1">Affected Assets</p>
+                                <p className="text-white font-medium">{report.data?.affectedAssets || 'N/A'}</p>
+                            </div>
 
-                                        {!incident.data?.anonymous && (
-                                            <>
-                                                <div className="p-4 rounded-lg bg-white/5 border border-white/10">
-                                                    <p className="text-xs text-slate-400 mb-1">Reporter</p>
-                                                    <p className="text-white font-medium">{incident.data?.reporter || 'N/A'}</p>
-                                                </div>
+                            <div className="p-4 rounded-lg bg-white/5 border border-white/10">
+                                <p className="text-xs text-slate-400 mb-1">IP Address</p>
+                                <p className="text-white font-medium font-mono">{report.data?.ipAddress || 'Not provided'}</p>
+                            </div>
 
-                                                <div className="p-4 rounded-lg bg-white/5 border border-white/10">
-                                                    <p className="text-xs text-slate-400 mb-1">Contact Email</p>
-                                                    <p className="text-white font-medium text-sm">{incident.data?.email || 'N/A'}</p>
-                                                </div>
-                                            </>
-                                        )}
-                                    </div>
-
-                                    {incident.data?.description && (
-                                        <div>
-                                            <h3 className="text-sm font-mono text-slate-400 uppercase tracking-wider mb-2">Incident Description</h3>
-                                            <div className="p-4 rounded-lg bg-white/5 border border-white/10">
-                                                <p className="text-white leading-relaxed">{incident.data.description}</p>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {incident.files && incident.files.length > 0 && (
-                                        <div>
-                                            <h3 className="text-sm font-mono text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
-                                                <i className="fa-solid fa-folder-open text-cyber-blue"></i>
-                                                Evidence Files ({incident.files.length})
-                                            </h3>
-                                            <div className="space-y-2">
-                                                {incident.files.map((file, idx) => (
-                                                    <div key={idx} className="p-4 bg-white/5 border border-white/10 rounded-lg hover:border-cyber-blue/50 transition-all">
-                                                        <div className="flex items-center justify-between">
-                                                            <div className="flex items-center gap-3 flex-1">
-                                                                <div className="w-10 h-10 rounded-lg bg-cyber-blue/10 border border-cyber-blue/30 flex items-center justify-center">
-                                                                    <i className="fa-solid fa-file text-cyber-blue"></i>
-                                                                </div>
-                                                                <div className="flex-1">
-                                                                    <p className="font-medium text-white">{file.name}</p>
-                                                                    <p className="text-xs text-slate-400">{file.size}</p>
-                                                                </div>
-                                                            </div>
-                                                            <button className="px-3 py-2 bg-white/5 border border-white/10 text-slate-400 rounded-lg hover:bg-white/10 transition-all text-sm">
-                                                                <i className="fa-solid fa-download"></i>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    <div>
-                                        <h3 className="text-sm font-mono text-slate-400 uppercase tracking-wider mb-3">
-                                            Admin Notes & Comments
-                                        </h3>
-                                        <div className="space-y-3 mb-4">
-                                            {(!incident.adminComments || incident.adminComments.length === 0) ? (
-                                                <p className="text-slate-500 text-sm italic">No admin comments yet</p>
-                                            ) : (
-                                                incident.adminComments.map((comment, idx) => (
-                                                    <div key={idx} className="p-3 bg-white/5 border border-white/10 rounded-lg">
-                                                        <div className="flex items-center justify-between mb-2">
-                                                            <span className="text-sm font-semibold text-cyber-blue">{comment.analyst}</span>
-                                                            <span className="text-xs text-slate-500 font-mono">{comment.time}</span>
-                                                        </div>
-                                                        <p className="text-slate-300 text-sm">{comment.text}</p>
-                                                    </div>
-                                                ))
-                                            )}
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <input
-                                                type="text"
-                                                value={newComment}
-                                                onChange={(e) => setNewComment(e.target.value)}
-                                                onKeyPress={(e) => e.key === 'Enter' && handleAddComment()}
-                                                placeholder="Add admin comment..."
-                                                className="flex-1 px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-slate-500 focus:border-cyber-blue focus:outline-none transition-colors"
-                                            />
-                                            <button 
-                                                onClick={handleAddComment}
-                                                className="px-6 py-2.5 bg-cyber-blue text-black font-semibold rounded-lg hover:shadow-[0_0_20px_rgba(0,240,255,0.4)] transition-all"
-                                            >
-                                                Add
-                                            </button>
-                                        </div>
-                                    </div>
+                            {report.data?.timestamp && (
+                                <div className="p-4 rounded-lg bg-white/5 border border-white/10">
+                                    <p className="text-xs text-slate-400 mb-1">Incident Timestamp</p>
+                                    <p className="text-white font-medium">{new Date(report.data.timestamp).toLocaleString()}</p>
                                 </div>
+                            )}
 
-                                <div className="space-y-6">
-                                    <div className="p-4 bg-white/5 border border-white/10 rounded-lg">
-                                        <h4 className="text-xs font-mono text-slate-400 uppercase tracking-wider mb-3">Details</h4>
-                                        <div className="space-y-2 text-sm">
-                                            <div>
-                                                <span className="text-slate-500">Report ID:</span>
-                                                <p className="text-white font-mono text-xs">{incident.id}</p>
-                                            </div>
-                                            <div>
-                                                <span className="text-slate-500">Submitted:</span>
-                                                <p className="text-white font-mono text-xs">{incident.submittedDate}</p>
-                                            </div>
-                                            {incident.data?.containment && (
-                                                <div className="mt-2 p-2 bg-red-500/10 border border-red-500/30 rounded">
-                                                    <p className="text-xs text-red-400 flex items-center gap-2">
-                                                        <i className="fa-solid fa-shield-halved"></i>
-                                                        Immediate Containment Requested
-                                                    </p>
-                                                </div>
-                                            )}
-                                        </div>
+                            {!report.data?.anonymous && (
+                                <>
+                                    <div className="p-4 rounded-lg bg-white/5 border border-white/10">
+                                        <p className="text-xs text-slate-400 mb-1">Reporter</p>
+                                        <p className="text-white font-medium">{report.data?.reporter || 'N/A'}</p>
                                     </div>
 
-                                    <div>
-                                        <label className="text-xs font-mono text-slate-400 uppercase tracking-wider mb-2 block">
-                                            Assign Analyst
-                                        </label>
-                                        <div className="flex gap-2">
-                                            <select
-                                                value={assignedTo}
-                                                onChange={(e) => setAssignedTo(e.target.value)}
-                                                className="flex-1 px-3 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white focus:border-cyber-blue focus:outline-none transition-colors"
-                                            >
-                                                <option value="">Unassigned</option>
-                                                {ANALYSTS.map(analyst => (
-                                                    <option key={analyst} value={analyst}>{analyst}</option>
-                                                ))}
-                                            </select>
-                                            <button 
-                                                onClick={handleAssign}
-                                                className="px-4 py-2.5 bg-cyber-blue text-black font-semibold rounded-lg hover:shadow-[0_0_20px_rgba(0,240,255,0.4)] transition-all"
-                                            >
-                                                <i className="fa-solid fa-check"></i>
-                                            </button>
-                                        </div>
+                                    <div className="p-4 rounded-lg bg-white/5 border border-white/10">
+                                        <p className="text-xs text-slate-400 mb-1">Contact Email</p>
+                                        <p className="text-white font-medium">{report.data?.email || 'N/A'}</p>
                                     </div>
+                                </>
+                            )}
 
-                                    <div>
-                                        <label className="text-xs font-mono text-slate-400 uppercase tracking-wider mb-2 block">
-                                            Update Status
-                                        </label>
-                                        <div className="space-y-2">
-                                            {['submitted', 'under_review', 'action_taken', 'closed'].map(status => (
-                                                <button
-                                                    key={status}
-                                                    onClick={() => handleStatusChange(status)}
-                                                    className={`w-full px-4 py-2.5 rounded-lg border transition-all text-sm font-medium ${
-                                                        incident.status === status 
-                                                            ? getStatusColor(status)
-                                                            : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'
-                                                    }`}
-                                                >
-                                                    {status.replace('_', ' ').toUpperCase()}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
+                            {report.data?.anonymous && (
+                                <div className="p-4 rounded-lg bg-white/5 border border-white/10 md:col-span-2">
+                                    <p className="text-xs text-slate-400 mb-1">Reporter Information</p>
+                                    <p className="text-yellow-400 font-medium flex items-center gap-2">
+                                        <i className="fa-solid fa-eye-slash"></i>
+                                        Anonymous Submission
+                                    </p>
+                                </div>
+                            )}
+                        </div>
 
-                                    <div>
-                                        <label className="text-xs font-mono text-slate-400 uppercase tracking-wider mb-2 block">
-                                            Priority Level
-                                        </label>
-                                        <div className="grid grid-cols-2 gap-2">
-                                            {['low', 'medium', 'high'].map(severity => (
-                                                <button
-                                                    key={severity}
-                                                    onClick={() => onUpdate(incident.firebaseKey, { data: { ...incident.data, severity } })}
-                                                    className={`px-3 py-2 rounded-lg border text-xs font-bold transition-all ${
-                                                        incident.data?.severity === severity
-                                                            ? getSeverityColor(severity)
-                                                            : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'
-                                                    }`}
-                                                >
-                                                    {severity.toUpperCase()}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
+                        {/* Description */}
+                        {report.data?.description && (
+                            <div className="mb-6">
+                                <h3 className="text-sm text-slate-400 mb-2 uppercase tracking-wider">Incident Description</h3>
+                                <div className="p-4 rounded-lg bg-white/5 border border-white/10">
+                                    <p className="text-white leading-relaxed">{report.data.description}</p>
                                 </div>
                             </div>
+                        )}
+
+                        {/* Evidence Files */}
+                        {report.files && report.files.length > 0 && (
+                            <div className="mb-6">
+                                <h3 className="text-sm text-slate-400 mb-2 uppercase tracking-wider">Evidence Files ({report.files.length})</h3>
+                                <div className="space-y-2">
+                                    {report.files.map((file, index) => (
+                                        <div key={index} className="p-3 rounded-lg bg-white/5 border border-white/10 flex items-center gap-3">
+                                            <i className="fa-solid fa-file text-cyber-blue text-xl"></i>
+                                            <div className="flex-1">
+                                                <p className="text-white text-sm font-medium">{file.name}</p>
+                                                <p className="text-xs text-slate-400">{file.size}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Additional Options */}
+                        <div className="flex gap-3 pt-4 border-t border-white/10">
+                            {report.data?.containment && (
+                                <div className="flex-1 p-3 rounded-lg bg-red-500/10 border border-red-500/30 flex items-center gap-2">
+                                    <i className="fa-solid fa-shield-halved text-red-400"></i>
+                                    <span className="text-sm text-red-400 font-medium">Immediate Containment Requested</span>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="mt-6 flex justify-end">
+                            <button 
+                                onClick={onClose}
+                                className="px-6 py-3 bg-gradient-to-r from-cyber-blue to-blue-600 rounded-xl font-bold text-black hover:shadow-[0_0_30px_rgba(0,240,255,0.5)] transition-all"
+                            >
+                                Close Details
+                            </button>
                         </div>
                     </div>
                 </div>
             );
         };
 
-        // Main Admin Panel
-        const AdminPanel = () => {
-            const [activeTab, setActiveTab] = useState('admin');
+        const Dashboard = () => {
             const [reports, setReports] = useState([]);
-            const [selectedReport, setSelectedReport] = useState(null);
             const [loading, setLoading] = useState(true);
-            const [currentUser, setCurrentUser] = useState(null);
-            const [authLoading, setAuthLoading] = useState(true);
+            const [selectedReport, setSelectedReport] = useState(null);
             const [showLoginPopup, setShowLoginPopup] = useState(false);
             const [showSettingsModal, setShowSettingsModal] = useState(false);
             const [showSecurityModal, setShowSecurityModal] = useState(false);
             const [showNotificationsModal, setShowNotificationsModal] = useState(false);
+            const [currentUser, setCurrentUser] = useState(null);
+            const [authLoading, setAuthLoading] = useState(true);
             const [profileEmoji, setProfileEmoji] = useState('🚀');
+            const [mobileOpen, setMobileOpen] = useState(false);
             const [notifications, setNotifications] = useState(SAMPLE_NOTIFICATIONS);
-            const [filters, setFilters] = useState({
-                search: '',
-                type: '',
-                severity: '',
-                status: '',
-                assignedTo: ''
+            const [stats, setStats] = useState({
+                total: 0,
+                high: 0,
+                medium: 0,
+                low: 0,
+                submitted: 0,
+                underReview: 0,
+                closed: 0
             });
 
             const hasUnreadNotifications = notifications.some(n => !n.read);
@@ -1338,10 +1187,12 @@
                     setCurrentUser(user);
                     
                     if (user) {
+                        // Load emoji from localStorage or database
                         const savedEmoji = localStorage.getItem(`userEmoji_${user.uid}`);
                         if (savedEmoji) {
                             setProfileEmoji(savedEmoji);
                         } else {
+                            // Try to load from database
                             try {
                                 const snapshot = await database.ref(`users/${user.uid}/profile/emoji`).once('value');
                                 const dbEmoji = snapshot.val();
@@ -1354,6 +1205,7 @@
                             }
                         }
 
+                        // Load notifications from localStorage
                         const savedNotifications = localStorage.getItem(`notifications_${user.uid}`);
                         if (savedNotifications) {
                             setNotifications(JSON.parse(savedNotifications));
@@ -1366,10 +1218,11 @@
                 return () => unsubscribe();
             }, []);
 
-            // Load reports from Firebase
             useEffect(() => {
+                // Reference to the 'reports' node in your database
                 const reportsRef = database.ref('reports');
                 
+                // Real-time listener
                 const handleData = (snapshot) => {
                     const data = snapshot.val();
                     if (data) {
@@ -1378,6 +1231,7 @@
                             ...data[key]
                         }));
                         
+                        // Sort by timestamp (newest first)
                         formattedList.sort((a, b) => {
                             const dateA = new Date(a.submittedTimestamp || 0);
                             const dateB = new Date(b.submittedTimestamp || 0);
@@ -1385,14 +1239,36 @@
                         });
 
                         setReports(formattedList);
+
+                        // Calculate statistics
+                        const newStats = {
+                            total: formattedList.length,
+                            high: formattedList.filter(r => r.data?.severity === 'high').length,
+                            medium: formattedList.filter(r => r.data?.severity === 'medium').length,
+                            low: formattedList.filter(r => r.data?.severity === 'low').length,
+                            submitted: formattedList.filter(r => r.status === 'submitted').length,
+                            underReview: formattedList.filter(r => r.status === 'under_review').length,
+                            closed: formattedList.filter(r => r.status === 'closed').length
+                        };
+                        setStats(newStats);
                     } else {
                         setReports([]);
+                        setStats({
+                            total: 0,
+                            high: 0,
+                            medium: 0,
+                            low: 0,
+                            submitted: 0,
+                            underReview: 0,
+                            closed: 0
+                        });
                     }
                     setLoading(false);
                 };
 
                 reportsRef.on('value', handleData);
 
+                // Cleanup listener on unmount
                 return () => reportsRef.off('value', handleData);
             }, []);
 
@@ -1406,8 +1282,10 @@
             };
 
             const handleProfileUpdate = () => {
+                // Reload user data
                 auth.currentUser.reload().then(() => {
                     setCurrentUser(auth.currentUser);
+                    // Reload emoji
                     const savedEmoji = localStorage.getItem(`userEmoji_${auth.currentUser.uid}`);
                     if (savedEmoji) {
                         setProfileEmoji(savedEmoji);
@@ -1433,79 +1311,44 @@
                 }
             };
 
-            const resetFilters = () => {
-                setFilters({
-                    search: '',
-                    type: '',
-                    severity: '',
-                    status: '',
-                    assignedTo: ''
-                });
-            };
-
-            const filteredReports = reports.filter(report => {
-                if (filters.search) {
-                    const searchLower = filters.search.toLowerCase();
-                    const matchesId = report.id?.toLowerCase().includes(searchLower);
-                    const matchesDescription = report.data?.description?.toLowerCase().includes(searchLower);
-                    const matchesReporter = report.data?.reporter?.toLowerCase().includes(searchLower);
-                    const matchesAssets = report.data?.affectedAssets?.toLowerCase().includes(searchLower);
-                    
-                    if (!matchesId && !matchesDescription && !matchesReporter && !matchesAssets) {
-                        return false;
-                    }
-                }
-                
-                if (filters.type && report.data?.incidentType !== filters.type) return false;
-                if (filters.severity && report.data?.severity !== filters.severity) return false;
-                if (filters.status && report.status !== filters.status) return false;
-                
-                if (filters.assignedTo) {
-                    if (filters.assignedTo === 'unassigned' && report.assignedTo) return false;
-                    if (filters.assignedTo !== 'unassigned' && report.assignedTo !== filters.assignedTo) return false;
-                }
-                
-                return true;
-            });
-
-            const updateReport = async (firebaseKey, updates) => {
-                try {
-                    const reportRef = database.ref(`reports/${firebaseKey}`);
-                    await reportRef.update(updates);
-                    
-                    if (selectedReport && selectedReport.firebaseKey === firebaseKey) {
-                        setSelectedReport({ ...selectedReport, ...updates });
-                    }
-                } catch (error) {
-                    console.error('Error updating report:', error);
-                    alert('Failed to update report. Please try again.');
-                }
-            };
-
-            const getSeverityColor = (severity) => {
+            const getSeverityBadge = (severity) => {
                 switch(severity?.toLowerCase()) {
-                    case 'high': return 'bg-red-500/20 text-red-400 border-red-500/30';
-                    case 'medium': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
-                    case 'low': return 'bg-green-500/20 text-green-400 border-green-500/30';
-                    default: return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+                    case 'high':
+                        return 'bg-red-500/10 text-red-400 border-red-500/20';
+                    case 'medium':
+                        return 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20';
+                    case 'low':
+                        return 'bg-green-500/10 text-green-400 border-green-500/20';
+                    default:
+                        return 'bg-blue-500/10 text-blue-400 border-blue-500/20';
                 }
             };
 
-            const getStatusColor = (status) => {
+            const getStatusBadge = (status) => {
                 switch(status) {
-                    case 'submitted': return 'bg-green-500/20 text-green-400 border-green-500/30';
-                    case 'under_review': return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
-                    case 'action_taken': return 'bg-purple-500/20 text-purple-400 border-purple-500/30';
-                    case 'closed': return 'bg-slate-500/20 text-slate-400 border-slate-500/30';
-                    default: return 'bg-slate-500/20 text-slate-400 border-slate-500/30';
+                    case 'submitted':
+                        return 'bg-green-500/10 text-green-400 border-green-500/20';
+                    case 'under_review':
+                        return 'bg-blue-500/10 text-blue-400 border-blue-500/20';
+                    case 'action_taken':
+                        return 'bg-purple-500/10 text-purple-400 border-purple-500/20';
+                    case 'closed':
+                        return 'bg-cyber-blue/10 text-cyber-blue border-cyber-blue/20';
+                    default:
+                        return 'bg-slate-500/10 text-slate-400 border-slate-500/20';
                 }
             };
 
-            const stats = {
-                total: reports.length,
-                submitted: reports.filter(r => r.status === 'submitted').length,
-                underReview: reports.filter(r => r.status === 'under_review').length,
-                high: reports.filter(r => r.data?.severity === 'high').length,
+            const getIncidentTypeIcon = (type) => {
+                switch(type) {
+                    case 'phishing': return 'fa-fish';
+                    case 'malware': return 'fa-virus';
+                    case 'ddos': return 'fa-server';
+                    case 'breach': return 'fa-user-secret';
+                    case 'unauthorized': return 'fa-lock-open';
+                    case 'suspicious': return 'fa-magnifying-glass';
+                    default: return 'fa-triangle-exclamation';
+                }
             };
 
             if (authLoading) {
@@ -1521,29 +1364,81 @@
 
             return (
                 <div className="min-h-screen pl-0 lg:pl-64 transition-all duration-300">
-                    <Sidebar activeTab={activeTab} />
-                    
-                    <header className="h-20 border-b border-white/10 glass-panel sticky top-0 z-40 px-8 flex items-center justify-between">
-                        <h2 className="text-xl font-bold text-white tracking-wide">
-                            <span className="text-slate-500 font-light">ADMIN CENTER /</span> THREAT REPORT MANAGEMENT
-                        </h2>
+                    {/* Sidebar */}
+                    <aside className="w-20 lg:w-64 h-screen fixed left-0 top-0 glass-panel border-r border-white/10 flex flex-col z-50">
+                        <div className="p-6 flex items-center gap-3 justify-center lg:justify-start">
+                            <i className="fa-solid fa-shield-virus text-3xl text-cyber-blue animate-pulse-fast"></i>
+                            <span className="hidden lg:block text-xl font-bold tracking-wider text-white">
+                                CYBER<span className="text-cyber-blue">SHIELD</span>
+                            </span>
+                        </div>
+                        <nav className="flex-1 py-8 flex flex-col gap-2">
+                            <button className="flex items-center gap-4 px-6 py-4 text-cyber-blue bg-white/5 relative">
+                                <div className="absolute left-0 top-0 bottom-0 w-1 bg-cyber-blue shadow-[0_0_15px_rgba(0,240,255,0.8)]"></div>
+                                <i className="fa-solid fa-chart-pie text-xl w-6 text-center"></i>
+                                <span className="hidden lg:block font-medium">Overview</span>
+                            </button>
+                            <button onClick={() => window.location.href='report-page.html'} className="flex items-center gap-4 px-6 py-4 text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+                                <i className="fa-solid fa-file-shield text-xl w-6 text-center"></i>
+                                <span className="hidden lg:block font-medium">Report Threat</span>
+                            </button>
+                            <button onClick={() => window.location.href='admin-panel.html'} className="flex items-center gap-4 px-6 py-4 text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+                                <i className="fa-solid fa-user-shield text-xl w-6 text-center"></i>
+                                <span className="hidden lg:block font-medium">Admin Panel</span>
+                            </button>
+                        </nav>
+                    </aside>
 
-                        <div className="flex items-center gap-6">
-                            <div className="flex items-center gap-2 px-4 py-2 bg-cyber-blue/10 border border-cyber-blue/30 rounded-lg">
-                                <div className="w-2 h-2 bg-cyber-blue rounded-full animate-pulse"></div>
-                                <span className="text-cyber-blue text-sm font-semibold">{filteredReports.length} Reports</span>
+                    {/* Header */}
+                    <header className="h-20 border-b border-white/10 glass-panel sticky top-0 z-40 px-4 lg:px-8 flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <button
+                                onClick={() => setMobileOpen(true)}
+                                className="lg:hidden p-2 rounded-md bg-black/20 hover:bg-white/5 transition"
+                                aria-label="Open menu"
+                            >
+                                <i className="fa-solid fa-bars text-cyber-blue"></i>
+                            </button>
+
+                            <div>
+                                <p className="text-xs text-slate-400 font-mono">NODE: ASIA-SE1</p>
+                                <h2 className="text-lg lg:text-xl font-bold text-white tracking-wide">REAL-TIME MONITOR</h2>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <div className="text-right hidden sm:block">
+                                <p className="text-xs text-slate-400 font-mono">DATABASE</p>
+                                <div className="flex items-center gap-2">
+                                    <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                                    <p className="text-xs text-green-400 font-bold">CONNECTED</p>
+                                </div>
                             </div>
                             
                             {currentUser ? (
-                                <ProfileDropdown 
-                                    user={currentUser} 
-                                    onLogout={handleLogout}
-                                    onOpenSettings={() => setShowSettingsModal(true)}
-                                    onOpenSecurity={() => setShowSecurityModal(true)}
-                                    onOpenNotifications={() => setShowNotificationsModal(true)}
-                                    profileEmoji={profileEmoji}
-                                    hasUnreadNotifications={hasUnreadNotifications}
-                                />
+                                <>
+                                    <div className="hidden sm:flex items-center gap-3">
+                                        <button onClick={() => setShowSettingsModal(true)} className="p-2 rounded-lg bg-black/30 hover:bg-white/5 transition flex items-center justify-center" title="Account Settings">
+                                            <i className="fa-solid fa-user-gear text-cyber-blue"></i>
+                                        </button>
+                                        <button onClick={() => setShowSecurityModal(true)} className="p-2 rounded-lg bg-black/30 hover:bg-white/5 transition flex items-center justify-center" title="Security">
+                                            <i className="fa-solid fa-shield text-cyber-purple"></i>
+                                        </button>
+                                        <button onClick={() => setShowNotificationsModal(true)} className="relative p-2 rounded-lg bg-black/30 hover:bg-white/5 transition flex items-center justify-center" title="Notifications">
+                                            <i className="fa-solid fa-bell text-yellow-400"></i>
+                                            <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full" style={{ transform: 'translate(45%, -45%)' }}></span>
+                                        </button>
+                                    </div>
+
+                                    <ProfileDropdown 
+                                        user={currentUser} 
+                                        onLogout={handleLogout}
+                                        onOpenSettings={() => setShowSettingsModal(true)}
+                                        onOpenSecurity={() => setShowSecurityModal(true)}
+                                        onOpenNotifications={() => setShowNotificationsModal(true)}
+                                        profileEmoji={profileEmoji}
+                                        hasUnreadNotifications={hasUnreadNotifications}
+                                    />
+                                </>
                             ) : (
                                 <button 
                                     onClick={() => setShowLoginPopup(true)}
@@ -1556,156 +1451,262 @@
                         </div>
                     </header>
 
-                    <main className="p-6 lg:p-8">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                            <div className="glass-panel p-6 rounded-2xl animate-fadeIn">
-                                <div className="flex justify-between items-start">
-                                    <div>
-                                        <p className="text-xs font-mono text-slate-400 uppercase tracking-wider">Total Reports</p>
-                                        <h3 className="text-3xl font-bold text-white mt-1">{stats.total}</h3>
+                    {mobileOpen && (
+                        <>
+                            <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={() => setMobileOpen(false)}></div>
+                            <aside className="fixed left-0 top-0 bottom-0 w-72 z-50 glass-panel p-6 lg:hidden overflow-y-auto">
+                                <div className="flex items-center justify-between mb-6">
+                                    <div className="flex items-center gap-3">
+                                        <i className="fa-solid fa-shield-virus text-2xl text-cyber-blue"></i>
+                                        <span className="font-bold text-white">CYBERSHIELD</span>
                                     </div>
-                                    <div className="w-10 h-10 rounded-lg flex items-center justify-center border border-cyber-blue/30 bg-cyber-blue/10">
-                                        <i className="fa-solid fa-database text-cyber-blue"></i>
-                                    </div>
+                                    <button onClick={() => setMobileOpen(false)} className="p-2 rounded-md hover:bg-white/5">
+                                        <i className="fa-solid fa-xmark text-white"></i>
+                                    </button>
                                 </div>
-                            </div>
 
-                            <div className="glass-panel p-6 rounded-2xl animate-fadeIn" style={{ animationDelay: '0.1s' }}>
-                                <div className="flex justify-between items-start">
-                                    <div>
-                                        <p className="text-xs font-mono text-slate-400 uppercase tracking-wider">New Submissions</p>
-                                        <h3 className="text-3xl font-bold text-white mt-1">{stats.submitted}</h3>
-                                    </div>
-                                    <div className="w-10 h-10 rounded-lg flex items-center justify-center border border-green-500/30 bg-green-500/10">
-                                        <i className="fa-solid fa-folder-open text-green-400"></i>
-                                    </div>
-                                </div>
-                            </div>
+                                <nav className="flex flex-col gap-2">
+                                    <a href="dashboard.html" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/5 text-slate-200">
+                                        <i className="fa-solid fa-chart-pie w-6 text-cyber-blue"></i>
+                                        <span>Overview</span>
+                                    </a>
+                                    <a href="report-page.html" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/5 text-slate-200">
+                                        <i className="fa-solid fa-file-shield w-6 text-cyber-blue"></i>
+                                        <span>Report Threat</span>
+                                    </a>
+                                    <a href="admin-panel.html" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/5 text-slate-200">
+                                        <i className="fa-solid fa-user-shield w-6 text-cyber-blue"></i>
+                                        <span>Admin Panel</span>
+                                    </a>
+                                </nav>
 
-                            <div className="glass-panel p-6 rounded-2xl animate-fadeIn" style={{ animationDelay: '0.2s' }}>
-                                <div className="flex justify-between items-start">
-                                    <div>
-                                        <p className="text-xs font-mono text-slate-400 uppercase tracking-wider">Under Review</p>
-                                        <h3 className="text-3xl font-bold text-white mt-1">{stats.underReview}</h3>
-                                    </div>
-                                    <div className="w-10 h-10 rounded-lg flex items-center justify-center border border-blue-500/30 bg-blue-500/10">
-                                        <i className="fa-solid fa-magnifying-glass text-blue-400"></i>
-                                    </div>
+                                <div className="mt-6 border-t border-white/10 pt-4">
+                                    <button onClick={() => { setShowSettingsModal(true); setMobileOpen(false); }} className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/5 flex items-center gap-3">
+                                        <i className="fa-solid fa-user-gear text-cyber-blue"></i>
+                                        <span>Account Settings</span>
+                                    </button>
+                                    <button onClick={() => { setShowSecurityModal(true); setMobileOpen(false); }} className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/5 flex items-center gap-3 mt-2">
+                                        <i className="fa-solid fa-shield text-cyber-purple"></i>
+                                        <span>Security</span>
+                                    </button>
+                                    <button onClick={() => { setShowNotificationsModal(true); setMobileOpen(false); }} className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/5 flex items-center gap-3 mt-2">
+                                        <i className="fa-solid fa-bell text-yellow-400"></i>
+                                        <span>Notifications</span>
+                                    </button>
                                 </div>
-                            </div>
+                            </aside>
+                        </>
+                    )}
 
-                            <div className="glass-panel p-6 rounded-2xl animate-fadeIn" style={{ animationDelay: '0.3s' }}>
-                                <div className="flex justify-between items-start">
-                                    <div>
-                                        <p className="text-xs font-mono text-slate-400 uppercase tracking-wider">High Priority</p>
-                                        <h3 className="text-3xl font-bold text-white mt-1">{stats.high}</h3>
-                                    </div>
-                                    <div className="w-10 h-10 rounded-lg flex items-center justify-center border border-red-500/30 bg-red-500/10">
-                                        <i className="fa-solid fa-triangle-exclamation text-red-400"></i>
-                                    </div>
-                                </div>
-                            </div>
+                    {/* Main Content */}
+                    <main className="p-6 lg:p-8 max-w-7xl mx-auto space-y-6">
+                        
+                        {/* Stats Row */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <MetricCard 
+                                label="Total Reports" 
+                                value={stats.total} 
+                                trend="up" 
+                                trendValue={`${stats.total} total`} 
+                                icon="fa-file-shield" 
+                                color="blue" 
+                            />
+                            <MetricCard 
+                                label="High Severity" 
+                                value={stats.high} 
+                                trend={stats.high > 0 ? "up" : "down"} 
+                                trendValue={`${stats.high} critical`} 
+                                icon="fa-triangle-exclamation" 
+                                color="red" 
+                            />
+                            <MetricCard 
+                                label="Under Review" 
+                                value={stats.underReview} 
+                                trend={stats.underReview > 0 ? "up" : "down"} 
+                                trendValue={`${stats.underReview} active`} 
+                                icon="fa-magnifying-glass" 
+                                color="purple" 
+                            />
+                            <MetricCard 
+                                label="Resolved" 
+                                value={stats.closed} 
+                                trend="down" 
+                                trendValue={`${stats.closed} closed`} 
+                                icon="fa-check-circle" 
+                                color="green" 
+                            />
                         </div>
 
-                        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                            <div className="lg:col-span-1">
-                                <FilterPanel filters={filters} setFilters={setFilters} onReset={resetFilters} />
-                            </div>
-
-                            <div className="lg:col-span-3">
-                                <div className="glass-panel rounded-2xl overflow-hidden animate-fadeIn">
-                                    <div className="p-6 border-b border-white/10">
-                                        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                                            <i className="fa-solid fa-inbox text-cyber-blue"></i>
-                                            Threat Reports Inbox
-                                        </h3>
+                        {/* Feed Row */}
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div className="lg:col-span-2 glass-panel rounded-2xl p-6 h-[600px] flex flex-col animate-fadeIn">
+                                <div className="flex items-center justify-between mb-6">
+                                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                                        <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                                        Live Threat Reports Feed
+                                    </h3>
+                                    <div className="flex items-center gap-3">
+                                        <span className="text-xs font-mono text-slate-400 bg-white/5 px-3 py-1 rounded-full border border-white/10">
+                                            {reports.length} REPORTS
+                                        </span>
+                                        <button 
+                                            onClick={() => window.location.reload()} 
+                                            className="text-xs text-slate-500 hover:text-cyber-blue transition-colors flex items-center gap-2"
+                                        >
+                                            <i className="fa-solid fa-rotate"></i>
+                                            REFRESH
+                                        </button>
                                     </div>
+                                </div>
 
+                                <div className="space-y-3 overflow-y-auto pr-2 flex-1">
                                     {loading ? (
-                                        <div className="p-12 text-center">
-                                            <i className="fa-solid fa-circle-notch animate-spin text-3xl text-cyber-blue mb-4"></i>
-                                            <p className="text-slate-400">Loading reports from database...</p>
+                                        <div className="h-full flex flex-col items-center justify-center text-slate-500 font-mono space-y-4">
+                                            <i className="fa-solid fa-circle-notch animate-spin text-3xl text-cyber-blue"></i>
+                                            <p>SYNCHRONIZING WITH DATABASE...</p>
+                                        </div>
+                                    ) : reports.length === 0 ? (
+                                        <div className="h-full flex flex-col items-center justify-center text-slate-500">
+                                            <i className="fa-solid fa-inbox text-5xl mb-4 opacity-20"></i>
+                                            <p className="font-bold text-lg mb-2">No Reports Found</p>
+                                            <p className="text-sm">User-submitted threat reports will appear here</p>
                                         </div>
                                     ) : (
-                                        <div className="overflow-x-auto">
-                                            <table className="w-full">
-                                                <thead className="bg-white/5">
-                                                    <tr>
-                                                        <th className="px-6 py-4 text-left text-xs font-mono text-slate-400 uppercase tracking-wider">ID</th>
-                                                        <th className="px-6 py-4 text-left text-xs font-mono text-slate-400 uppercase tracking-wider">Type</th>
-                                                        <th className="px-6 py-4 text-left text-xs font-mono text-slate-400 uppercase tracking-wider">Severity</th>
-                                                        <th className="px-6 py-4 text-left text-xs font-mono text-slate-400 uppercase tracking-wider">Status</th>
-                                                        <th className="px-6 py-4 text-left text-xs font-mono text-slate-400 uppercase tracking-wider">Assigned</th>
-                                                        <th className="px-6 py-4 text-left text-xs font-mono text-slate-400 uppercase tracking-wider">Date</th>
-                                                        <th className="px-6 py-4 text-left text-xs font-mono text-slate-400 uppercase tracking-wider">Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {filteredReports.length === 0 ? (
-                                                        <tr>
-                                                            <td colSpan="7" className="px-6 py-12 text-center text-slate-500">
-                                                                <i className="fa-solid fa-inbox text-4xl mb-3 block opacity-20"></i>
-                                                                {reports.length === 0 ? 'No reports in database' : 'No reports match your filters'}
-                                                            </td>
-                                                        </tr>
-                                                    ) : (
-                                                        filteredReports.map((report) => (
-                                                            <tr 
-                                                                key={report.firebaseKey} 
-                                                                className="border-b border-white/5 table-row-hover transition-all cursor-pointer"
-                                                                onClick={() => setSelectedReport(report)}
-                                                            >
-                                                                <td className="px-6 py-4 font-mono text-sm text-cyber-blue">{report.id}</td>
-                                                                <td className="px-6 py-4 text-sm text-white">{report.data?.incidentType || 'N/A'}</td>
-                                                                <td className="px-6 py-4">
-                                                                    <span className={`text-xs font-bold px-2 py-1 rounded border ${getSeverityColor(report.data?.severity)}`}>
-                                                                        {report.data?.severity?.toUpperCase() || 'MEDIUM'}
-                                                                    </span>
-                                                                </td>
-                                                                <td className="px-6 py-4">
-                                                                    <span className={`text-xs font-bold px-2 py-1 rounded border ${getStatusColor(report.status)}`}>
-                                                                        {report.status?.replace('_', ' ').toUpperCase() || 'PENDING'}
-                                                                    </span>
-                                                                </td>
-                                                                <td className="px-6 py-4 text-sm text-slate-400">
-                                                                    {report.assignedTo || <span className="italic">Unassigned</span>}
-                                                                </td>
-                                                                <td className="px-6 py-4 text-xs font-mono text-slate-400">{report.submittedDate}</td>
-                                                                <td className="px-6 py-4">
-                                                                    <button 
-                                                                        onClick={(e) => {
-                                                                            e.stopPropagation();
-                                                                            setSelectedReport(report);
-                                                                        }}
-                                                                        className="px-3 py-1.5 bg-cyber-blue/10 border border-cyber-blue/30 text-cyber-blue rounded-lg hover:bg-cyber-blue/20 transition-all text-sm"
-                                                                    >
-                                                                        Manage
-                                                                    </button>
-                                                                </td>
-                                                            </tr>
-                                                        ))
+                                        reports.map((report, index) => (
+                                            <div 
+                                                key={report.firebaseKey || index} 
+                                                className="p-4 rounded-xl bg-white/5 border border-white/5 hover:border-cyber-blue/30 transition-all group cursor-pointer animate-slideIn"
+                                                onClick={() => setSelectedReport(report)}
+                                                style={{ animationDelay: `${index * 0.05}s` }}
+                                            >
+                                                <div className="flex justify-between items-start mb-3">
+                                                    <div className="flex gap-2">
+                                                        <span className={`text-[10px] font-bold px-2 py-1 rounded border ${getSeverityBadge(report.data?.severity)}`}>
+                                                            {report.data?.severity?.toUpperCase() || 'MEDIUM'}
+                                                        </span>
+                                                        <span className={`text-[10px] font-bold px-2 py-1 rounded border ${getStatusBadge(report.status)}`}>
+                                                            {report.status?.replace('_', ' ').toUpperCase() || 'PENDING'}
+                                                        </span>
+                                                    </div>
+                                                    <span className="text-[10px] font-mono text-slate-500">{report.submittedDate || 'Just now'}</span>
+                                                </div>
+
+                                                <div className="flex items-center gap-3 mb-2">
+                                                    <div className="w-8 h-8 rounded-lg bg-cyber-blue/10 border border-cyber-blue/30 flex items-center justify-center">
+                                                        <i className={`fa-solid ${getIncidentTypeIcon(report.data?.incidentType)} text-cyber-blue text-sm`}></i>
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <h4 className="font-bold text-slate-200 group-hover:text-cyber-blue transition-colors">
+                                                            {report.data?.incidentType?.charAt(0).toUpperCase() + report.data?.incidentType?.slice(1) || 'Unknown Incident'}
+                                                        </h4>
+                                                        <p className="text-xs text-slate-500 font-mono">ID: {report.id}</p>
+                                                    </div>
+                                                </div>
+
+                                                <div className="grid grid-cols-2 gap-2 text-xs mt-3 pt-3 border-t border-white/5">
+                                                    <div>
+                                                        <span className="text-slate-500">Target:</span>
+                                                        <span className="text-cyber-blue/80 font-mono ml-1">{report.data?.affectedAssets || 'N/A'}</span>
+                                                    </div>
+                                                    {report.files && report.files.length > 0 && (
+                                                        <div className="text-right">
+                                                            <i className="fa-solid fa-paperclip text-slate-500 mr-1"></i>
+                                                            <span className="text-slate-400">{report.files.length} file(s)</span>
+                                                        </div>
                                                     )}
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                                </div>
+
+                                                {report.data?.description && (
+                                                    <p className="text-xs text-slate-400 mt-2 line-clamp-2">{report.data.description}</p>
+                                                )}
+
+                                                <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/5">
+                                                    {report.data?.anonymous ? (
+                                                        <span className="text-xs text-yellow-400 flex items-center gap-1">
+                                                            <i className="fa-solid fa-eye-slash"></i>
+                                                            Anonymous
+                                                        </span>
+                                                    ) : (
+                                                        <span className="text-xs text-slate-500">
+                                                            By: <span className="text-slate-300">{report.data?.reporter || 'Unknown'}</span>
+                                                        </span>
+                                                    )}
+                                                    
+                                                    <button className="text-xs text-cyber-blue hover:underline flex items-center gap-1">
+                                                        View Details
+                                                        <i className="fa-solid fa-arrow-right"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))
                                     )}
                                 </div>
                             </div>
+
+                            {/* Sidebar Panel */}
+                            <div className="space-y-6">
+                                {/* Quick Actions */}
+                                <div className="glass-panel rounded-2xl p-6 animate-fadeIn" style={{ animationDelay: '0.2s' }}>
+                                    <h3 className="text-lg font-bold text-white mb-6 font-mono flex items-center gap-2">
+                                        <i className="fa-solid fa-bolt text-cyber-blue"></i>
+                                        QUICK_ACTIONS
+                                    </h3>
+                                    <div className="space-y-3">
+                                        <button 
+                                            onClick={() => window.location.href = 'report-page.html'}
+                                            className="w-full p-4 rounded-xl bg-gradient-to-r from-cyber-blue to-blue-600 text-black font-extrabold hover:brightness-110 hover:shadow-[0_0_20px_rgba(0,240,255,0.3)] transition-all flex items-center justify-center gap-2 uppercase tracking-tight"
+                                        >
+                                            <i className="fa-solid fa-plus-circle"></i>
+                                            New Report
+                                        </button>
+                                        
+                                        <button 
+                                            onClick={() => window.location.href = 'admin-panel.html'}
+                                            className="w-full p-3 rounded-xl border border-white/20 text-slate-300 font-bold hover:bg-white/5 transition-all flex items-center justify-center gap-2"
+                                        >
+                                            <i className="fa-solid fa-shield-halved"></i>
+                                            Admin Panel
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Statistics */}
+                                <div className="glass-panel rounded-2xl p-6 animate-fadeIn" style={{ animationDelay: '0.3s' }}>
+                                    <h3 className="text-lg font-bold text-white mb-4 font-mono">SEVERITY_STATS</h3>
+                                    <div className="space-y-3">
+                                        <div className="flex items-center justify-between p-3 rounded-lg bg-red-500/10 border border-red-500/20">
+                                            <span className="text-sm text-red-400 font-medium">High</span>
+                                            <span className="text-xl font-bold text-red-400">{stats.high}</span>
+                                        </div>
+                                        <div className="flex items-center justify-between p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
+                                            <span className="text-sm text-yellow-400 font-medium">Medium</span>
+                                            <span className="text-xl font-bold text-yellow-400">{stats.medium}</span>
+                                        </div>
+                                        <div className="flex items-center justify-between p-3 rounded-lg bg-green-500/10 border border-green-500/20">
+                                            <span className="text-sm text-green-400 font-medium">Low</span>
+                                            <span className="text-xl font-bold text-green-400">{stats.low}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
                     </main>
 
+                    {/* Report Detail Modal */}
                     {selectedReport && (
-                        <IncidentDetailModal 
-                            incident={selectedReport}
-                            onClose={() => setSelectedReport(null)}
-                            onUpdate={updateReport}
+                        <ReportDetailModal 
+                            report={selectedReport} 
+                            onClose={() => setSelectedReport(null)} 
                         />
                     )}
 
+                    {/* Login Popup */}
                     {showLoginPopup && (
                         <LoginPopup onClose={() => setShowLoginPopup(false)} />
                     )}
 
+                    {/* Account Settings Modal */}
                     {showSettingsModal && currentUser && (
                         <AccountSettingsModal
                             user={currentUser}
@@ -1714,10 +1715,12 @@
                         />
                     )}
 
+                    {/* Security Modal */}
                     {showSecurityModal && (
                         <SecurityModal onClose={() => setShowSecurityModal(false)} />
                     )}
 
+                    {/* Notifications Modal */}
                     {showNotificationsModal && (
                         <NotificationsModal 
                             onClose={() => setShowNotificationsModal(false)}
@@ -1730,7 +1733,7 @@
             );
         };
 
-        ReactDOM.render(<AdminPanel />, document.getElementById('root'));
+        ReactDOM.render(<Dashboard />, document.getElementById('root'));
     </script>
 </body>
 </html>
