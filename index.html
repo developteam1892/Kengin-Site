@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CyberShield | Dashboard</title>
     
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -68,40 +68,81 @@
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;600;800&display=swap');
-        body { background-color: #030712; color: #e2e8f0; font-family: 'Outfit', sans-serif; overflow-x: hidden; }
+        
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        html {
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        
+        body { 
+            background-color: #030712; 
+            color: #e2e8f0; 
+            font-family: 'Outfit', sans-serif; 
+            overflow-x: hidden; 
+            touch-action: manipulation;
+        }
+        
         .cyber-grid {
-            position: fixed; width: 200%; height: 200%; top: -50%; left: -50%;
+            position: fixed; 
+            width: 200%; 
+            height: 200%; 
+            top: -50%; 
+            left: -50%;
             background-image: linear-gradient(transparent 0%, rgba(0, 240, 255, 0.05) 2%, transparent 3%),
             linear-gradient(90deg, transparent 0%, rgba(0, 240, 255, 0.05) 2%, transparent 3%);
-            background-size: 50px 50px; transform: perspective(500px) rotateX(60deg);
-            animation: grid-move 20s linear infinite; z-index: -1; pointer-events: none;
+            background-size: 50px 50px; 
+            transform: perspective(500px) rotateX(60deg);
+            animation: grid-move 20s linear infinite; 
+            z-index: -1; 
+            pointer-events: none;
         }
+        
         @keyframes grid-move {
             0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
             100% { transform: perspective(500px) rotateX(60deg) translateY(50px); }
         }
+        
         .glass-panel {
-            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(16px);
+            background: rgba(15, 23, 42, 0.6); 
+            backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
+        
         .glass-panel:hover {
             border-color: rgba(0, 240, 255, 0.3);
         }
+        
         .scanlines {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh;
             background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
-            background-size: 100% 4px; pointer-events: none; z-index: 9999; opacity: 0.2;
+            background-size: 100% 4px; 
+            pointer-events: none; 
+            z-index: 9999; 
+            opacity: 0.2;
         }
+        
         ::-webkit-scrollbar {
             width: 6px;
+            height: 6px;
         }
+        
         ::-webkit-scrollbar-track {
             background: #0f172a;
         }
+        
         ::-webkit-scrollbar-thumb {
             background: #1e293b;
             border-radius: 3px;
         }
+        
         ::-webkit-scrollbar-thumb:hover {
             background: #00f0ff;
         }
@@ -128,8 +169,15 @@
 
         .loader-rings {
             position: relative;
-            width: 120px;
-            height: 120px;
+            width: 80px;
+            height: 80px;
+        }
+
+        @media (min-width: 768px) {
+            .loader-rings {
+                width: 120px;
+                height: 120px;
+            }
         }
 
         .loader-ring {
@@ -140,15 +188,22 @@
         }
 
         .loader-ring:nth-child(1) {
-            width: 120px;
-            height: 120px;
+            width: 80px;
+            height: 80px;
             border-top-color: #00f0ff;
             animation-duration: 2s;
         }
 
+        @media (min-width: 768px) {
+            .loader-ring:nth-child(1) {
+                width: 120px;
+                height: 120px;
+            }
+        }
+
         .loader-ring:nth-child(2) {
-            width: 100px;
-            height: 100px;
+            width: 60px;
+            height: 60px;
             top: 10px;
             left: 10px;
             border-top-color: #bd00ff;
@@ -156,13 +211,27 @@
             animation-direction: reverse;
         }
 
+        @media (min-width: 768px) {
+            .loader-ring:nth-child(2) {
+                width: 100px;
+                height: 100px;
+            }
+        }
+
         .loader-ring:nth-child(3) {
-            width: 80px;
-            height: 80px;
+            width: 40px;
+            height: 40px;
             top: 20px;
             left: 20px;
             border-top-color: #ff003c;
             animation-duration: 1s;
+        }
+
+        @media (min-width: 768px) {
+            .loader-ring:nth-child(3) {
+                width: 80px;
+                height: 80px;
+            }
         }
 
         @keyframes rotate {
@@ -171,12 +240,18 @@
         }
 
         .loading-progress {
-            width: 200px;
+            width: 160px;
             height: 4px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 2px;
             overflow: hidden;
             margin-top: 40px;
+        }
+
+        @media (min-width: 768px) {
+            .loading-progress {
+                width: 200px;
+            }
         }
 
         .loading-progress-bar {
@@ -196,10 +271,16 @@
         .loading-text {
             color: #00f0ff;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
+            font-size: 12px;
             margin-top: 24px;
             letter-spacing: 2px;
             animation: glow 2s ease-in-out infinite;
+        }
+
+        @media (min-width: 768px) {
+            .loading-text {
+                font-size: 14px;
+            }
         }
 
         .loading-dots::after {
@@ -216,25 +297,41 @@
 
         .emoji-selector {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 12px;
-            max-height: 400px;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 8px;
+            max-height: 300px;
             overflow-y: auto;
             padding: 4px;
         }
 
+        @media (min-width: 768px) {
+            .emoji-selector {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+                gap: 12px;
+                max-height: 400px;
+            }
+        }
+
         .emoji-option {
-            width: 80px;
-            height: 80px;
+            width: 100%;
+            aspect-ratio: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 48px;
+            font-size: 32px;
             cursor: pointer;
             border-radius: 12px;
             border: 2px solid transparent;
             transition: all 0.3s ease;
             background: rgba(255, 255, 255, 0.03);
+            min-height: 60px;
+        }
+
+        @media (min-width: 768px) {
+            .emoji-option {
+                font-size: 48px;
+                min-height: 80px;
+            }
         }
 
         .emoji-option:hover {
@@ -259,6 +356,33 @@
             border-radius: 50%;
             border: 2px solid #0f172a;
             animation: ping-slow 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+
+        /* Responsive utilities */
+        @media (max-width: 640px) {
+            .line-clamp-2 {
+                display: -webkit-box;
+                -webkit-line-clamp: 1;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+        }
+
+        /* Better touch targets */
+        button, a {
+            min-height: 44px;
+        }
+
+        @media (max-width: 640px) {
+            .hide-mobile {
+                display: none;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .show-mobile-only {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -1364,11 +1488,11 @@
 
             return (
                 <div className="min-h-screen pl-0 lg:pl-64 transition-all duration-300">
-                    {/* Sidebar */}
-                    <aside className="w-20 lg:w-64 h-screen fixed left-0 top-0 glass-panel border-r border-white/10 flex flex-col z-50">
-                        <div className="p-6 flex items-center gap-3 justify-center lg:justify-start">
+                    {/* Sidebar - Hidden on mobile, visible on large screens */}
+                    <aside className="hidden lg:flex w-64 h-screen fixed left-0 top-0 glass-panel border-r border-white/10 flex-col z-50">
+                        <div className="p-6 flex items-center gap-3 justify-start">
                             <i className="fa-solid fa-shield-virus text-3xl text-cyber-blue animate-pulse-fast"></i>
-                            <span className="hidden lg:block text-xl font-bold tracking-wider text-white">
+                            <span className="text-xl font-bold tracking-wider text-white">
                                 CYBER<span className="text-cyber-blue">SHIELD</span>
                             </span>
                         </div>
@@ -1376,15 +1500,15 @@
                             <button className="flex items-center gap-4 px-6 py-4 text-cyber-blue bg-white/5 relative">
                                 <div className="absolute left-0 top-0 bottom-0 w-1 bg-cyber-blue shadow-[0_0_15px_rgba(0,240,255,0.8)]"></div>
                                 <i className="fa-solid fa-chart-pie text-xl w-6 text-center"></i>
-                                <span className="hidden lg:block font-medium">Overview</span>
+                                <span className="font-medium">Overview</span>
                             </button>
                             <button onClick={() => window.location.href='report-page.html'} className="flex items-center gap-4 px-6 py-4 text-slate-400 hover:text-white hover:bg-white/5 transition-all">
                                 <i className="fa-solid fa-file-shield text-xl w-6 text-center"></i>
-                                <span className="hidden lg:block font-medium">Report Threat</span>
+                                <span className="font-medium">Report Threat</span>
                             </button>
                             <button onClick={() => window.location.href='admin-panel.html'} className="flex items-center gap-4 px-6 py-4 text-slate-400 hover:text-white hover:bg-white/5 transition-all">
                                 <i className="fa-solid fa-user-shield text-xl w-6 text-center"></i>
-                                <span className="hidden lg:block font-medium">Admin Panel</span>
+                                <span className="font-medium">Admin Panel</span>
                             </button>
                         </nav>
                     </aside>
