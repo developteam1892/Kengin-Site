@@ -1732,7 +1732,28 @@
 
         ReactDOM.render(<AdminPanel />, document.getElementById('root'));
     </script>
-    
+    <script>
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+
+      const adminEmails = [
+        "ado@gmail.com",
+        "test01@gmail.com",
+        "owner@cybershield.com"
+      ];
+
+      if (adminEmails.includes(user.email)) {
+        console.log("Admin access granted");
+      } else {
+        alert("Access denied. Not an admin.");
+        window.location.href = "login.html";
+      }
+
+    } else {
+      window.location.href = "login.html";
+    }
+  });
+</script>
 
 </body>
 </html>
